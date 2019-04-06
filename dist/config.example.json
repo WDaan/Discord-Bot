@@ -1,0 +1,8 @@
+{
+    "prefix": "prefix you want to use to invoke the bot",
+    "token": "your discord token",
+    "pi_pass": "raspberry pi password",
+    "pi_host": "raspberry pi ip-adress",
+    "server_ip": "server ip-adress",
+    "plex_token": "plex-token"
+}

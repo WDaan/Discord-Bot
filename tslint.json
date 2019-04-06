@@ -1,0 +1,16 @@
+{
+    "defaultSeverity": "error",
+    "extends": [
+        "tslint:latest",
+        "tslint-eslint-rules", 
+        "tslint-config-prettier"
+    ], "rules" : {
+        "quotemark": [true, "single"],
+        "variable-name": false,
+        "class-name": false,
+        "object-literal-sort-keys": false,
+        "no-var-requires": false,
+        "no-console": false,
+        "member-ordering": false
+    }
+}

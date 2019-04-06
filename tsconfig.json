@@ -1,0 +1,24 @@
+{
+    "compilerOptions": {
+        "target": "esnext",
+        "watch": true,
+        "lib": ["dom", "es2017"],
+        "module": "commonjs",
+        "outDir": "dist",
+        //"sourceMap": true
+    },
+    "files": [
+        "./src/main.ts",
+        "./src/server.class.ts",
+        "./src/user.class.ts",
+        "./src/media.class.ts",
+        "./src/discord_client.class.ts",
+        "./src/viewers.class.ts"
+    ],
+    "include": [
+        "src/**/*.ts"
+    ],
+    "exclude": [
+        "node_modules"
+    ]
+}
