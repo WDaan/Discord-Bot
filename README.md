@@ -7,6 +7,6 @@ Bot can:
 - wake server
 - shutdown
 - autoshutdown
-- get numer of plex streams
+- get number of plex streams
 - get who is watching/listening to what
 - get available free disk space on server
