@@ -275,6 +275,7 @@ class Server {
     // tslint:disable-next-line: triple-equals
     if (viewers.num == 0) {
       this.shutdown();
+      discord_client.update_msg();
       discord_client.write_auto_shutdown();
     }
   }
