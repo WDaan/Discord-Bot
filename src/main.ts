@@ -27,8 +27,11 @@ discord_client.discord.on('message', async message => {
           break;
         case 'storage':
           message.channel.send(discord_client.msg.wait);
-          await server.storage();
-          message.channel.send(discord_client.msg.storage);
+          if ((await server.storage()) === 'storage done') {
+            message.channel.send(discord_client.msg.storage);
+          } else {
+            message.channel.send(discord_client.msg.dead);
+          }
           break;
         case 'info':
           message.channel.send(discord_client.msg.info_header);

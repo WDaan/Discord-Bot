@@ -33,12 +33,13 @@ class Server {
         this.ssh.exec('/home/sleep.sh', {}).start();
     }
     async is_alive() {
-        const alive = await ping.promise.probe(server_ip);
-        return alive ? alive : false;
+        const _alive = await ping.promise.probe(server_ip);
+        const { alive } = _alive;
+        return alive;
     }
     // everything to do with storage
     async storage() {
-        if (this.is_alive()) {
+        if (await this.is_alive() === true) {
             const storage_data = await this.request_storage_html();
             return new Promise((resolve, reject) => {
                 if (!util_1.isUndefined(storage_data) && !util_1.isNull(storage_data)) {
@@ -49,6 +50,10 @@ class Server {
                     reject('storage failed');
                 }
             });
+        }
+        else {
+            discord_client_class_1.discord_client.update_msg();
+            return false;
         }
     }
     map_storage_data(data) {
@@ -95,7 +100,7 @@ class Server {
         }
     }
     async status() {
-        if (this.is_alive()) {
+        if (await this.is_alive() === true) {
             return new Promise(async (resolve, reject) => {
                 const viewers = await this.check_plex();
                 // tslint:disable-next-line: triple-equals
@@ -109,6 +114,12 @@ class Server {
                     discord_client_class_1.discord_client.update_msg();
                     resolve(discord_client_class_1.discord_client.msg.watching_users);
                 }
+            });
+        }
+        else {
+            return new Promise(async (resolve, reject) => {
+                discord_client_class_1.discord_client.update_msg();
+                resolve(discord_client_class_1.discord_client.msg.dead);
             });
         }
     }

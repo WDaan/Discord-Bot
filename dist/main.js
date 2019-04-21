@@ -28,8 +28,12 @@ discord_client_class_1.discord_client.discord.on('message', async (message) => {
                     break;
                 case 'storage':
                     message.channel.send(discord_client_class_1.discord_client.msg.wait);
-                    await server_class_1.server.storage();
-                    message.channel.send(discord_client_class_1.discord_client.msg.storage);
+                    if ((await server_class_1.server.storage()) === 'storage done') {
+                        message.channel.send(discord_client_class_1.discord_client.msg.storage);
+                    }
+                    else {
+                        message.channel.send(discord_client_class_1.discord_client.msg.dead);
+                    }
                     break;
                 case 'info':
                     message.channel.send(discord_client_class_1.discord_client.msg.info_header);
