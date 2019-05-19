@@ -48,13 +48,13 @@ class Server {
 
   public async is_alive() {
     const _alive = await ping.promise.probe(server_ip);
-    const { alive } = _alive;
-   return alive;
+    const {alive} = _alive;
+    return alive;
   }
 
   // everything to do with storage
   public async storage() {
-    if (await this.is_alive() === true) {
+    if ((await this.is_alive()) === true) {
       const storage_data = await this.request_storage_html();
       return new Promise((resolve, reject) => {
         if (!isUndefined(storage_data) && !isNull(storage_data)) {
@@ -65,7 +65,7 @@ class Server {
         }
       });
     } else {
-        discord_client.update_msg();
+      discord_client.update_msg();
       return false;
     }
   }
@@ -103,7 +103,7 @@ class Server {
 
   // everything todo with plex & sleep
   public async sleep() {
-    if (this.is_alive()) {
+    if ((await this.is_alive()) === true) {
       return new Promise(async (resolve, reject) => {
         const viewers: any = await this.check_plex();
         // if number of viewers is 0, server can shutdown
@@ -121,7 +121,7 @@ class Server {
   }
 
   public async status() {
-    if (await this.is_alive() === true) {
+    if ((await this.is_alive()) === true) {
       return new Promise(async (resolve, reject) => {
         const viewers: any = await this.check_plex();
         // tslint:disable-next-line: triple-equals
@@ -144,12 +144,15 @@ class Server {
   }
 
   private async check_plex() {
-    //
-    return new Promise(async (resolve, reject) => {
-      const viewers = await this.request_plex_xml();
-      resolve(viewers);
-      reject('something went wrong');
-    });
+    if ((await this.is_alive()) === true) {
+      return new Promise(async (resolve, reject) => {
+        const viewers = await this.request_plex_xml();
+        resolve(viewers);
+        reject('something went wrong');
+      });
+    } else {
+      return 'offline';
+    }
   }
 
   // request the whole xml from plex
@@ -279,13 +282,17 @@ class Server {
 
   // automatic sleep
   public async autosleep() {
-    console.log('trying to auto shutdown');
+    console.log('trying to auto shutdown -- ' + new Date().toUTCString());
     const viewers: any = await this.check_plex();
-    // tslint:disable-next-line: triple-equals
-    if (viewers.num == 0) {
-      this.shutdown();
-      discord_client.update_msg();
-      discord_client.write_auto_shutdown();
+    if (viewers === 'offline') {
+      console.log('server already offline');
+    } else {
+      // tslint:disable-next-line: triple-equals
+      if (viewers.num == 0) {
+        this.shutdown();
+        discord_client.update_msg();
+        discord_client.write_auto_shutdown();
+      }
     }
   }
 }

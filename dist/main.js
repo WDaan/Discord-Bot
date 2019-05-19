@@ -60,8 +60,8 @@ discord_client_class_1.discord_client.discord.on('message', async (message) => {
 });
 // auto_shutdown server between 22h30 & 02h00
 const Shutdown_Handler = schedule.scheduleJob({
-    hour: 22,
-    minute: 30
+    hour: 9,
+    minute: 24
 }, () => {
     server_class_1.server.autosleep(); // first check
     const startTime = new Date(Date.now());
