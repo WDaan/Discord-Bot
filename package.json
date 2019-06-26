@@ -3,18 +3,20 @@
   "version": "1.0.0",
   "description": "Discord bot for managing my server",
   "main": "index.js",
-  "scripts": {},
+  "scripts": {
+    "dev" : "tsc && nodemon dist/main.js"
+  },
   "author": "Daan Wijns",
   "license": "ISC",
   "dependencies": {
-    "cheerio": "^1.0.0-rc.2",
-    "discord.js": "^11.4.2",
+    "cheerio": "^1.0.0-rc.3",
+    "discord.js": "^11.5.1",
     "node-schedule": "^1.3.2",
     "ping": "^0.2.2",
     "request": "^2.88.0",
     "request-promise": "^4.2.4",
     "simple-ssh": "^1.0.0",
-    "tslint": "^5.15.0",
+    "tslint": "^5.18.0",
     "xml-js": "^1.6.11"
   },
   "devDependencies": {
@@ -22,16 +24,17 @@
     "@types/request": "^2.48.1",
     "eslint": "^5.16.0",
     "eslint-config-airbnb": "^17.1.0",
-    "eslint-config-prettier": "^4.1.0",
-    "eslint-plugin-import": "^2.16.0",
+    "eslint-config-prettier": "^4.3.0",
+    "eslint-plugin-import": "^2.18.0",
     "eslint-plugin-jsx-a11y": "^6.2.1",
-    "eslint-plugin-prettier": "^3.0.1",
-    "eslint-plugin-react": "^7.12.4",
+    "eslint-plugin-prettier": "^3.1.0",
+    "eslint-plugin-react": "^7.14.2",
     "eslint-plugin-snakecase": "^0.0.1",
-    "prettier": "^1.16.4",
+    "jest": "^24.8.0",
+    "prettier": "^1.18.2",
     "tslint-config-prettier": "^1.18.0",
     "tslint-eslint-rules": "^5.4.0",
-    "typescript": "^3.4.2"
+    "typescript": "^3.5.2"
   },
   "eslintConfig": {
     "extends": "airbnb"
