@@ -1,30 +1,30 @@
-import {isNull, isUndefined} from 'util';
-import {Viewers} from './viewers.class';
+import { isNull, isUndefined } from 'util'
+import { Viewers } from './viewers.class'
 
-const Discord = require('discord.js');
-const {token} = require('./config.json');
+const Discord = require('discord.js')
+const { token } = require('./config.json')
 
 // discord
 class Discord_client {
-  public discord = new Discord.Client();
+  public discord = new Discord.Client()
   public storage_data = {
     free: '',
     daan: '',
     media: ''
-  };
+  }
 
-  public viewers: Viewers;
-  public watching_users_string = '';
+  public viewers: Viewers
+  public watching_users_string = ''
 
-  public msg;
+  public msg
 
   constructor() {
-    this.init();
-    this.update_msg();
+    this.init()
+    this.update_msg()
   }
 
   public set_user_string() {
-    this.watching_users_string = '';
+    this.watching_users_string = ''
     if (!isUndefined(this.viewers) && !isNull(this.viewers)) {
       for (let i = 0; i < this.viewers.num; i++) {
         this.watching_users_string +=
@@ -35,22 +35,22 @@ class Discord_client {
           this.viewers.users[i].media.maker +
           '  -  ' +
           this.viewers.users[i].media.title +
-          '\n';
+          '\n'
       }
     }
   }
 
   public write_auto_shutdown() {
-    const channel = this.discord.channels.find(x => x.name === 'bot-commands');
-    channel.send(this.msg.auto_shutdown);
+    const channel = this.discord.channels.find(x => x.name === 'bot-commands')
+    channel.send(this.msg.auto_shutdown)
   }
 
   private init() {
-    this.discord.login(token);
+    this.discord.login(token)
     this.discord.once('ready', () => {
-      console.log('Ready!');
-    });
-    this.update_msg();
+      console.log('Ready!')
+    })
+    this.update_msg()
   }
 
   public update_msg() {
@@ -223,14 +223,14 @@ class Discord_client {
           ]
         }
       }
-    };
+    }
   }
 
   private get_num_watching() {
     if (!isUndefined(this.viewers) && !isNull(this.viewers)) {
-      return this.viewers.num;
+      return this.viewers.num
     }
   }
 }
 
-export const discord_client = new Discord_client();
+export const discord_client = new Discord_client()

@@ -1,16 +1,18 @@
 {
-    "defaultSeverity": "error",
-    "extends": [
-        "tslint:latest",
-        "tslint-eslint-rules", 
-        "tslint-config-prettier"
-    ], "rules" : {
-        "quotemark": [true, "single"],
-        "variable-name": false,
-        "class-name": false,
-        "object-literal-sort-keys": false,
-        "no-var-requires": false,
-        "no-console": false,
-        "member-ordering": false
-    }
+  "defaultSeverity": "error",
+  "extends": ["tslint:latest", "tslint-eslint-rules", "tslint-config-prettier"],
+  "rules": {
+    "quotemark": [true, "single"],
+    "variable-name": false,
+    "class-name": false,
+    "object-literal-sort-keys": false,
+    "no-var-requires": false,
+    "no-console": false,
+    "member-ordering": false,
+    "max-classes-per-file": false,
+    "semicolon": [true, "never"],
+    "lines-between-class-members": true,
+    "no-namespace": false,
+    "no-shadowed-variable": false
+  }
 }

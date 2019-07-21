@@ -8,12 +8,10 @@
         //"sourceMap": true
     },
     "files": [
-        "./src/main.ts",
-        "./src/server.class.ts",
-        "./src/user.class.ts",
-        "./src/media.class.ts",
-        "./src/discord_client.class.ts",
-        "./src/viewers.class.ts"
+        "src/main.ts",
+        "src/models.ts",
+        "src/messages.ts",
+        "src/functions.ts",
     ],
     "include": [
         "src/**/*.ts"

@@ -1,60 +1,84 @@
-const schedule = require('node-schedule');
-import {discord_client} from './discord_client.class';
-import {server} from './server.class';
-const {prefix} = require('./config.json');
+const schedule = require('node-schedule')
+const Discord = require('discord.js')
+const SSH = require('simple-ssh')
 
-// BOT command handling
-discord_client.discord.on('message', async message => {
+const { token, prefix, pi_host, pi_pass, pi_user } = require('./config.json')
+import { isNull, isUndefined } from 'util'
+import { FUN } from './functions'
+import { MSG } from './messages'
+import { StorageInfo } from './models'
+
+// logging in to discord
+const discord = new Discord.Client()
+discord.login(token)
+discord.once('ready', () => {
+  console.log('Ready!')
+})
+
+// ssh'in into pi
+const ssh = new SSH({
+  host: pi_host,
+  user: pi_user,
+  pass: pi_pass
+})
+
+ssh.on('error', err => {
+  const channel = discord.channels.find(x => x.name === 'bot-commands')
+  channel.send('Couldn\'t ssh into pi')
+  console.log(err)
+  ssh.end()
+})
+
+discord.on('message', async message => {
   if (message.member.hasPermission(['KICK_MEMBERS', 'BAN_MEMBERS'])) {
     if (message.content.startsWith(`${prefix}`)) {
-      const words = message.content.split(' ');
-      const fword = words[0].substring(1);
+      const words = message.content.split(' ')
+      const fword = words[0].substring(1)
       switch (fword) {
         case 'wake':
-          discord_client.update_msg();
-          message.channel.send(discord_client.msg.wake);
-          server.wake();
-          break;
+          const msg = MSG.wake()
+          message.channel.send(msg)
+          FUN.wake(ssh)
+          break
         case 'forcesleep':
-          discord_client.update_msg();
-          message.channel.send(discord_client.msg.force_shutdown);
-          server.shutdown();
-          break;
+          message.channel.send(MSG.force_shutdown())
+          FUN.shutdown(ssh)
+          break
         case 'sleep':
-          discord_client.update_msg();
-          message.channel.send(discord_client.msg.wait);
-          message.channel.send(await server.sleep());
-          break;
+          message.channel.send(MSG.wait())
+          message.channel.send(await FUN.sleep(ssh))
+          break
         case 'storage':
-          message.channel.send(discord_client.msg.wait);
-          if ((await server.storage()) === 'storage done') {
-            message.channel.send(discord_client.msg.storage);
+          message.channel.send(MSG.wait())
+          const storage: StorageInfo = await FUN.storage()
+          if (!isNull(storage) || !isUndefined(storage)) {
+            message.channel.send(MSG.storage(storage))
           } else {
-            message.channel.send(discord_client.msg.dead);
+            message.channel.send(MSG.dead())
           }
-          break;
+          break
         case 'info':
-          message.channel.send(discord_client.msg.info_header);
-          message.channel.send(discord_client.msg.info_music);
-          message.channel.send(discord_client.msg.info_Floki);
-          message.channel.send(discord_client.msg.info_meme);
-          message.channel.send(discord_client.msg.info_music_247);
-          break;
+          message.channel.send(MSG.info_header())
+          message.channel.send(MSG.info_music())
+          message.channel.send(MSG.info_Floki())
+          message.channel.send(MSG.info_meme())
+          message.channel.send(MSG.info_music_247())
+          break
         case 'status':
-          message.channel.send(discord_client.msg.wait);
-          message.channel.send(await server.status());
-          break;
+          message.channel.send(MSG.wait())
+          message.channel.send(await FUN.status())
+          break
         default:
-          message.channel.send(discord_client.msg.no_command);
-          break;
+          message.channel.send(MSG.no_command())
+          break
       }
     }
   } else {
     if (message.content.startsWith(`${prefix}`)) {
-      message.channel.send(discord_client.msg.supreme);
+      message.channel.send(MSG.supreme)
     }
   }
-});
+})
 
 // auto_shutdown server between 22h30 & 02h00
 const Shutdown_Handler = schedule.scheduleJob(
@@ -63,9 +87,9 @@ const Shutdown_Handler = schedule.scheduleJob(
     minute: 24
   },
   () => {
-    server.autosleep(); // first check
-    const startTime = new Date(Date.now());
-    const endTime = new Date(startTime.getTime() + 5 * 60 * 60 * 1000);
+    FUN.autosleep(discord, ssh) // first check
+    const startTime = new Date(Date.now())
+    const endTime = new Date(startTime.getTime() + 5 * 60 * 60 * 1000)
     const j = schedule.scheduleJob(
       {
         start: startTime,
@@ -73,8 +97,8 @@ const Shutdown_Handler = schedule.scheduleJob(
         rule: '*/10 * * * *'
       },
       () => {
-        server.autosleep(); // recheck every 10 min
+        FUN.autosleep(discord, ssh) // recheck every 10 min
       }
-    );
+    )
   }
-);
+)
