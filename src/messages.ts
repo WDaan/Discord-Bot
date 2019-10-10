@@ -16,31 +16,41 @@ export namespace MSG {
 
   export function wake(): object {
     return {
-      embed: { color: 3447003, title: 'Waking up Floki...' }
+      embed: { color: 3447003, title: 'Waking up Floki...' },
+    }
+  }
+
+  export function command_failed(): object {
+    return {
+      embed: { color: 0xe31b1b, title: 'Command failed :cry:' },
     }
   }
 
   export function force_shutdown(): object {
     return {
-      embed: { color: 3447003, title: 'Turning off Floki...' }
+      embed: { color: 3447003, title: 'Turning off Floki...' },
     }
   }
 
   export function info_header(): object {
     return {
-      embed: { color: 3447003, title: '-----Server Info-----' }
+      embed: { color: 3447003, title: '-----Server Info-----' },
     }
   }
 
   export function info_music(): object {
     return {
-      embed: { 
-        color: 0xe31b1b, title: 'Music Player', 
-        fields: [ 
-          { name: 'Prefix : ', value: '$', inline: true }, 
-          { name: 'Popular commands', value: '$play (link or songname)\n$pause\n$stop\n$skip\n$unpause\n$forward (getal)' }
-        ]
-      }
+      embed: {
+        color: 0xe31b1b,
+        title: 'Music Player',
+        fields: [
+          { name: 'Prefix : ', value: '$', inline: true },
+          {
+            name: 'Popular commands',
+            value: '$play (link or songname)\n$pause\n$stop\n$skip\n$unpause\n$forward (getal)',
+          },
+        ],
+      },
     }
   }
 
@@ -50,10 +60,10 @@ export namespace MSG {
         color: 0x14d928,
         title: 'Floki',
         fields: [
-         { name: 'Prefix : ', value: '!', inline: true },
-         { name: 'Popular commands', value: '!meme\n!wake\n!sleep\n!storage\n!info\n!status'}
-        ]
-      }
+          { name: 'Prefix : ', value: '!', inline: true },
+          { name: 'Popular commands', value: '!meme\n!wake\n!sleep\n!storage\n!info\n!status' },
+        ],
+      },
     }
   }
 
@@ -63,14 +73,14 @@ export namespace MSG {
         color: 0x01f5fa,
         title: 'Dank Memers',
         fields: [
-          {name: 'Prefix: ', value: 'pls', inline: true },
+          { name: 'Prefix: ', value: 'pls', inline: true },
           {
             name: 'Popular commands',
-           value:
-            'pls meme\npls memeeconomy\npls mock (name)\npls emojify (text)\npls help image\npls help memey\npls help fun'
-          }
-        ]
-      }
+            value:
+              'pls meme\npls memeeconomy\npls mock (name)\npls emojify (text)\npls help image\npls help memey\npls help fun',
+          },
+        ],
+      },
     }
   }
 
@@ -84,28 +94,28 @@ export namespace MSG {
           {
             name: 'Popular commands',
             value:
-            'mb play <radiostreamlink/mp3stream/youtubelink/search>\nmb np //shows now playing\nmb streamlinks //shows available stations\nmb leave //stops music'
-          }
-        ]
-      }
+              'mb play <radiostreamlink/mp3stream/youtubelink/search>\nmb np //shows now playing\nmb streamlinks //shows available stations\nmb leave //stops music',
+          },
+        ],
+      },
     }
   }
 
   export function no_one_watching(): object {
     return {
-      embed: {color: 0x00ff22,title: 'No one is watching'} 
+      embed: { color: 0x00ff22, title: 'No one is watching' },
     }
   }
 
   export function alive(): object {
     return {
-      embed: {color: 0x00ff22,title: 'Server is online ^__^'}
+      embed: { color: 0x00ff22, title: 'Server is online ^__^' },
     }
   }
 
   export function dead(): object {
     return {
-      embed: {color: 0xff0000,title: 'Server is offline :/' }
+      embed: { color: 0xff0000, title: 'Server is offline :/' },
     }
   }
 
@@ -115,25 +125,25 @@ export namespace MSG {
     return {
       embed: {
         color: 3447003,
-        title:
-          'Server was shutdown at ' + hours + ':' + min
-        }
-      }
+        title: 'Server was shutdown at ' + hours + ':' + min,
+      },
+    }
   }
 
   export function auto_shutdown(discord): void {
     const channel = discord.channels.find(x => x.name === 'bot-commands')
     const hours = new Date().getHours()
     const min = new Date().getMinutes()
-    channel.send({embed: {
-      color: 3447003,
-      title:
-        'Server was auto shutdown at ' + hours + ':' + min
-    }})
+    channel.send({
+      embed: {
+        color: 3447003,
+        title: 'Server was auto shutdown at ' + hours + ':' + min,
+      },
+    })
   }
 
   export function storage(storage: StorageInfo): object {
-    return {   
+    return {
       embed: {
         color: 3447003,
         title: 'Storage Info:',
@@ -141,20 +151,20 @@ export namespace MSG {
           {
             name: 'Free:',
             value: storage.free + ' Gb',
-            inline: true
+            inline: true,
           },
           {
             name: 'Daan:',
             value: storage.daan + ' Gb',
-            inline: true
+            inline: true,
           },
           {
             name: 'Media:',
             value: storage.media + ' Gb',
-            inline: true
-          }
-        ]
-      }
+            inline: true,
+          },
+        ],
+      },
     }
   }
 
@@ -174,16 +184,16 @@ export namespace MSG {
       }
     }
     return {
-      embed: { color: 3447003, title: watching_users_string }
+      embed: { color: 3447003, title: watching_users_string },
     }
   }
 
   export function shutdown_error(num: number): object {
     return {
-        embed: {
+      embed: {
         color: 0xff0000,
-        title: 'I can\'t do that, ' + num + ' still watching.'
-      }
+        title: "I can't do that, " + num + ' still watching.',
+      },
     }
   }
 }

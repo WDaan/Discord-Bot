@@ -1,9 +1,16 @@
 "use strict";
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : new P(function (resolve) { resolve(result.value); }).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 const schedule = require('node-schedule');
 const Discord = require('discord.js');
-const SSH = require('simple-ssh');
-const { token, prefix, pi_host, pi_pass, pi_user } = require('./config.json');
+const { token, prefix } = require('./config.json');
 const util_1 = require("util");
 const functions_1 = require("./functions");
 const messages_1 = require("./messages");
@@ -13,40 +20,37 @@ discord.login(token);
 discord.once('ready', () => {
     console.log('Ready!');
 });
-// ssh'in into pi
-const ssh = new SSH({
-    host: pi_host,
-    user: pi_user,
-    pass: pi_pass
-});
-ssh.on('error', err => {
-    const channel = discord.channels.find(x => x.name === 'bot-commands');
-    channel.send('Couldn\'t ssh into pi');
-    console.log(err);
-    ssh.end();
-});
-discord.on('message', async (message) => {
+discord.on('message', (message) => __awaiter(this, void 0, void 0, function* () {
     if (message.member.hasPermission(['KICK_MEMBERS', 'BAN_MEMBERS'])) {
         if (message.content.startsWith(`${prefix}`)) {
             const words = message.content.split(' ');
             const fword = words[0].substring(1);
             switch (fword) {
                 case 'wake':
-                    const msg = messages_1.MSG.wake();
-                    message.channel.send(msg);
-                    functions_1.FUN.wake(ssh);
+                    message.channel.send(messages_1.MSG.wake());
+                    try {
+                        functions_1.FUN.wake();
+                    }
+                    catch (err) {
+                        message.channel.send(messages_1.MSG.command_failed());
+                    }
                     break;
                 case 'forcesleep':
                     message.channel.send(messages_1.MSG.force_shutdown());
-                    functions_1.FUN.shutdown(ssh);
+                    try {
+                        functions_1.FUN.shutdown();
+                    }
+                    catch (err) {
+                        message.channel.send(messages_1.MSG.command_failed());
+                    }
                     break;
                 case 'sleep':
                     message.channel.send(messages_1.MSG.wait());
-                    message.channel.send(await functions_1.FUN.sleep(ssh));
+                    message.channel.send(yield functions_1.FUN.sleep());
                     break;
                 case 'storage':
                     message.channel.send(messages_1.MSG.wait());
-                    const storage = await functions_1.FUN.storage();
+                    let storage = yield functions_1.FUN.storage();
                     if (!util_1.isNull(storage) || !util_1.isUndefined(storage)) {
                         message.channel.send(messages_1.MSG.storage(storage));
                     }
@@ -63,7 +67,7 @@ discord.on('message', async (message) => {
                     break;
                 case 'status':
                     message.channel.send(messages_1.MSG.wait());
-                    message.channel.send(await functions_1.FUN.status());
+                    message.channel.send(yield functions_1.FUN.status());
                     break;
                 default:
                     message.channel.send(messages_1.MSG.no_command());
@@ -76,20 +80,20 @@ discord.on('message', async (message) => {
             message.channel.send(messages_1.MSG.supreme);
         }
     }
-});
+}));
 // auto_shutdown server between 22h30 & 02h00
-const Shutdown_Handler = schedule.scheduleJob({
+schedule.scheduleJob({
     hour: 9,
-    minute: 24
+    minute: 24,
 }, () => {
-    functions_1.FUN.autosleep(discord, ssh); // first check
+    functions_1.FUN.autosleep(discord); // first check
     const startTime = new Date(Date.now());
     const endTime = new Date(startTime.getTime() + 5 * 60 * 60 * 1000);
-    const j = schedule.scheduleJob({
+    schedule.scheduleJob({
         start: startTime,
         end: endTime,
-        rule: '*/10 * * * *'
+        rule: '*/10 * * * *',
     }, () => {
-        functions_1.FUN.autosleep(discord, ssh); // recheck every 10 min
+        functions_1.FUN.autosleep(discord); // recheck every 10 min
     });
 });

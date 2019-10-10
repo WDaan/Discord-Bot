@@ -4,7 +4,8 @@
   "description": "Discord bot for managing my server",
   "main": "index.js",
   "scripts": {
-    "dev" : "tsc && nodemon dist/main.js"
+    "compile": "tsc",
+    "serve": "nodemon dist/main.js"
   },
   "author": "Daan Wijns",
   "license": "ISC",
@@ -15,28 +16,16 @@
     "ping": "^0.2.2",
     "request": "^2.88.0",
     "request-promise": "^4.2.4",
-    "simple-ssh": "^1.0.0",
-    "tslint": "^5.18.0",
+    "shelljs": "^0.8.3",
     "xml-js": "^1.6.11"
   },
   "devDependencies": {
-    "@types/node-schedule": "^1.2.3",
-    "@types/request": "^2.48.1",
-    "eslint": "^5.16.0",
-    "eslint-config-airbnb": "^17.1.0",
-    "eslint-config-prettier": "^4.3.0",
-    "eslint-plugin-import": "^2.18.0",
-    "eslint-plugin-jsx-a11y": "^6.2.1",
-    "eslint-plugin-prettier": "^3.1.0",
-    "eslint-plugin-react": "^7.14.2",
-    "eslint-plugin-snakecase": "^0.0.1",
-    "jest": "^24.8.0",
+    "@typescript-eslint/eslint-plugin": "^1.13.0",
+    "@typescript-eslint/parser": "^1.13.0",
+    "eslint": "^6.5.1",
+    "eslint-config-prettier": "^6.4.0",
+    "eslint-plugin-prettier": "^3.1.1",
     "prettier": "^1.18.2",
-    "tslint-config-prettier": "^1.18.0",
-    "tslint-eslint-rules": "^5.4.0",
-    "typescript": "^3.5.2"
-  },
-  "eslintConfig": {
-    "extends": "airbnb"
+    "typescript": "^3.6.4"
   }
 }

@@ -5,11 +5,7 @@ export class StorageInfo {
 
 // media
 export class Media {
-  constructor(
-    public type: string,
-    public maker: string,
-    public title: string
-  ) {}
+  constructor(public type: string, public maker: string, public title: string) {}
 }
 
 // user class
@@ -23,13 +19,8 @@ export class User {
 
 // viewers
 export class Viewers {
-  public num: number
-  public users: User[]
-
-  constructor() {
-    this.num = 0
-    this.users = []
-  }
+  public num: number = 0
+  public users: User[] = []
 
   public add_user(usr: User) {
     this.users.push(usr)

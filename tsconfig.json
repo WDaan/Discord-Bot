@@ -1,22 +1,18 @@
 {
-    "compilerOptions": {
-        "target": "esnext",
-        "watch": true,
-        "lib": ["dom", "es2017"],
-        "module": "commonjs",
-        "outDir": "dist",
-        //"sourceMap": true
-    },
-    "files": [
-        "src/main.ts",
-        "src/models.ts",
-        "src/messages.ts",
-        "src/functions.ts",
-    ],
-    "include": [
-        "src/**/*.ts"
-    ],
-    "exclude": [
-        "node_modules"
-    ]
+  "compilerOptions": {
+    "module": "commonjs",
+    "esModuleInterop": true,
+    "target": "es6",
+    "moduleResolution": "node",
+    "outDir": "dist",
+    "watch" : true
+  },
+  "files": [
+    "src/main.ts",
+    "src/models.ts",
+    "src/messages.ts",
+    "src/functions.ts"
+  ],
+  "include": ["src/**/*.ts"],
+  "exclude": ["node_modules"]
 }

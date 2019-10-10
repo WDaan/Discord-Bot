@@ -1,32 +1,16 @@
 const schedule = require('node-schedule')
 const Discord = require('discord.js')
-const SSH = require('simple-ssh')
 
-const { token, prefix, pi_host, pi_pass, pi_user } = require('./config.json')
+const { token, prefix } = require('./config.json')
 import { isNull, isUndefined } from 'util'
 import { FUN } from './functions'
 import { MSG } from './messages'
-import { StorageInfo } from './models'
 
 // logging in to discord
 const discord = new Discord.Client()
 discord.login(token)
 discord.once('ready', () => {
   console.log('Ready!')
-})
-
-// ssh'in into pi
-const ssh = new SSH({
-  host: pi_host,
-  user: pi_user,
-  pass: pi_pass
-})
-
-ssh.on('error', err => {
-  const channel = discord.channels.find(x => x.name === 'bot-commands')
-  channel.send('Couldn\'t ssh into pi')
-  console.log(err)
-  ssh.end()
 })
 
 discord.on('message', async message => {
@@ -36,21 +20,28 @@ discord.on('message', async message => {
       const fword = words[0].substring(1)
       switch (fword) {
         case 'wake':
-          const msg = MSG.wake()
-          message.channel.send(msg)
-          FUN.wake(ssh)
+          message.channel.send(MSG.wake())
+          try {
+            FUN.wake()
+          } catch (err) {
+            message.channel.send(MSG.command_failed())
+          }
           break
         case 'forcesleep':
           message.channel.send(MSG.force_shutdown())
-          FUN.shutdown(ssh)
+          try {
+            FUN.shutdown()
+          } catch (err) {
+            message.channel.send(MSG.command_failed())
+          }
           break
         case 'sleep':
           message.channel.send(MSG.wait())
-          message.channel.send(await FUN.sleep(ssh))
+          message.channel.send(await FUN.sleep())
           break
         case 'storage':
           message.channel.send(MSG.wait())
-          const storage: StorageInfo = await FUN.storage()
+          let storage: any = await FUN.storage()
           if (!isNull(storage) || !isUndefined(storage)) {
             message.channel.send(MSG.storage(storage))
           } else {
@@ -81,24 +72,24 @@ discord.on('message', async message => {
 })
 
 // auto_shutdown server between 22h30 & 02h00
-const Shutdown_Handler = schedule.scheduleJob(
+schedule.scheduleJob(
   {
     hour: 9,
-    minute: 24
+    minute: 24,
   },
   () => {
-    FUN.autosleep(discord, ssh) // first check
+    FUN.autosleep(discord) // first check
     const startTime = new Date(Date.now())
     const endTime = new Date(startTime.getTime() + 5 * 60 * 60 * 1000)
-    const j = schedule.scheduleJob(
+    schedule.scheduleJob(
       {
         start: startTime,
         end: endTime,
-        rule: '*/10 * * * *'
+        rule: '*/10 * * * *',
       },
       () => {
-        FUN.autosleep(discord, ssh) // recheck every 10 min
-      }
+        FUN.autosleep(discord) // recheck every 10 min
+      },
     )
-  }
+  },
 )

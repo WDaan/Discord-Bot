@@ -17,31 +17,41 @@ var MSG;
     MSG.supreme = supreme;
     function wake() {
         return {
-            embed: { color: 3447003, title: 'Waking up Floki...' }
+            embed: { color: 3447003, title: 'Waking up Floki...' },
         };
     }
     MSG.wake = wake;
+    function command_failed() {
+        return {
+            embed: { color: 0xe31b1b, title: 'Command failed :cry:' },
+        };
+    }
+    MSG.command_failed = command_failed;
     function force_shutdown() {
         return {
-            embed: { color: 3447003, title: 'Turning off Floki...' }
+            embed: { color: 3447003, title: 'Turning off Floki...' },
         };
     }
     MSG.force_shutdown = force_shutdown;
     function info_header() {
         return {
-            embed: { color: 3447003, title: '-----Server Info-----' }
+            embed: { color: 3447003, title: '-----Server Info-----' },
         };
     }
     MSG.info_header = info_header;
     function info_music() {
         return {
             embed: {
-                color: 0xe31b1b, title: 'Music Player',
+                color: 0xe31b1b,
+                title: 'Music Player',
                 fields: [
                     { name: 'Prefix : ', value: '$', inline: true },
-                    { name: 'Popular commands', value: '$play (link or songname)\n$pause\n$stop\n$skip\n$unpause\n$forward (getal)' }
-                ]
-            }
+                    {
+                        name: 'Popular commands',
+                        value: '$play (link or songname)\n$pause\n$stop\n$skip\n$unpause\n$forward (getal)',
+                    },
+                ],
+            },
         };
     }
     MSG.info_music = info_music;
@@ -52,9 +62,9 @@ var MSG;
                 title: 'Floki',
                 fields: [
                     { name: 'Prefix : ', value: '!', inline: true },
-                    { name: 'Popular commands', value: '!meme\n!wake\n!sleep\n!storage\n!info\n!status' }
-                ]
-            }
+                    { name: 'Popular commands', value: '!meme\n!wake\n!sleep\n!storage\n!info\n!status' },
+                ],
+            },
         };
     }
     MSG.info_Floki = info_Floki;
@@ -67,10 +77,10 @@ var MSG;
                     { name: 'Prefix: ', value: 'pls', inline: true },
                     {
                         name: 'Popular commands',
-                        value: 'pls meme\npls memeeconomy\npls mock (name)\npls emojify (text)\npls help image\npls help memey\npls help fun'
-                    }
-                ]
-            }
+                        value: 'pls meme\npls memeeconomy\npls mock (name)\npls emojify (text)\npls help image\npls help memey\npls help fun',
+                    },
+                ],
+            },
         };
     }
     MSG.info_meme = info_meme;
@@ -83,28 +93,28 @@ var MSG;
                     { name: 'Prefix: ', value: 'mb', inline: true },
                     {
                         name: 'Popular commands',
-                        value: 'mb play <radiostreamlink/mp3stream/youtubelink/search>\nmb np //shows now playing\nmb streamlinks //shows available stations\nmb leave //stops music'
-                    }
-                ]
-            }
+                        value: 'mb play <radiostreamlink/mp3stream/youtubelink/search>\nmb np //shows now playing\nmb streamlinks //shows available stations\nmb leave //stops music',
+                    },
+                ],
+            },
         };
     }
     MSG.info_music_247 = info_music_247;
     function no_one_watching() {
         return {
-            embed: { color: 0x00ff22, title: 'No one is watching' }
+            embed: { color: 0x00ff22, title: 'No one is watching' },
         };
     }
     MSG.no_one_watching = no_one_watching;
     function alive() {
         return {
-            embed: { color: 0x00ff22, title: 'Server is online ^__^' }
+            embed: { color: 0x00ff22, title: 'Server is online ^__^' },
         };
     }
     MSG.alive = alive;
     function dead() {
         return {
-            embed: { color: 0xff0000, title: 'Server is offline :/' }
+            embed: { color: 0xff0000, title: 'Server is offline :/' },
         };
     }
     MSG.dead = dead;
@@ -114,8 +124,8 @@ var MSG;
         return {
             embed: {
                 color: 3447003,
-                title: 'Server was shutdown at ' + hours + ':' + min
-            }
+                title: 'Server was shutdown at ' + hours + ':' + min,
+            },
         };
     }
     MSG.user_shutdown = user_shutdown;
@@ -123,10 +133,12 @@ var MSG;
         const channel = discord.channels.find(x => x.name === 'bot-commands');
         const hours = new Date().getHours();
         const min = new Date().getMinutes();
-        channel.send({ embed: {
+        channel.send({
+            embed: {
                 color: 3447003,
-                title: 'Server was auto shutdown at ' + hours + ':' + min
-            } });
+                title: 'Server was auto shutdown at ' + hours + ':' + min,
+            },
+        });
     }
     MSG.auto_shutdown = auto_shutdown;
     function storage(storage) {
@@ -138,20 +150,20 @@ var MSG;
                     {
                         name: 'Free:',
                         value: storage.free + ' Gb',
-                        inline: true
+                        inline: true,
                     },
                     {
                         name: 'Daan:',
                         value: storage.daan + ' Gb',
-                        inline: true
+                        inline: true,
                     },
                     {
                         name: 'Media:',
                         value: storage.media + ' Gb',
-                        inline: true
-                    }
-                ]
-            }
+                        inline: true,
+                    },
+                ],
+            },
         };
     }
     MSG.storage = storage;
@@ -171,7 +183,7 @@ var MSG;
             }
         }
         return {
-            embed: { color: 3447003, title: watching_users_string }
+            embed: { color: 3447003, title: watching_users_string },
         };
     }
     MSG.watching_users = watching_users;
@@ -179,8 +191,8 @@ var MSG;
         return {
             embed: {
                 color: 0xff0000,
-                title: 'I can\'t do that, ' + num + ' still watching.'
-            }
+                title: "I can't do that, " + num + ' still watching.',
+            },
         };
     }
     MSG.shutdown_error = shutdown_error;

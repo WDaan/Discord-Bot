@@ -4,17 +4,19 @@ const convert_xml = require('xml-js')
 const cheerio = require('cheerio')
 import { isNull, isUndefined } from 'util'
 
-const { server_ip, plex_token } = require('./config.json')
+const shell = require('shelljs')
+
+const { server_ip, plex_token, cmd_shutdown, cmd_wakeonlan } = require('./config.json')
 import { MSG } from './messages'
 import { Media, StorageInfo, User, Viewers } from './models'
 
 export namespace FUN {
-  export function wake(ssh) {
-    ssh.exec('/home/wake.sh', {}).start()
+  export function wake() {
+    shell.exec(cmd_wakeonlan)
   }
 
-  export function shutdown(ssh) {
-    ssh.exec('/home/sleep.sh', {}).start()
+  export async function shutdown() {
+    shell.exec(cmd_shutdown)
   }
 
   // get storage
@@ -50,14 +52,13 @@ export namespace FUN {
     }
   }
 
-  export async function sleep(ssh) {
+  export async function sleep() {
     if ((await is_alive()) === true) {
       return new Promise(async (resolve, reject) => {
         const viewers: any = await check_plex()
         // if number of viewers is 0, server can shutdown
-        // tslint:disable-next-line: triple-equals
         if (viewers.num == 0) {
-          shutdown(ssh)
+          shutdown()
           resolve(MSG.user_shutdown())
         } else {
           resolve(MSG.shutdown_error(viewers.num))
@@ -65,22 +66,19 @@ export namespace FUN {
       })
     } else {
       // should fix the error i guess :p
-      return new Promise(async (resolve, reject) =>
-        reject('Server was already offline...')
-      )
+      return new Promise(async (resolve, reject) => resolve('Server was already offline...'))
     }
   }
 
   // automatic sleep
-  export async function autosleep(discord, ssh) {
+  export async function autosleep(discord) {
     console.log('trying to auto shutdown -- ' + new Date().toUTCString())
     const viewers: any = await check_plex()
     if (viewers === 'offline') {
       console.log('server already offline')
     } else {
-      // tslint:disable-next-line: triple-equals
       if (viewers.num == 0) {
-        shutdown(ssh)
+        shutdown()
         MSG.auto_shutdown(discord)
       }
     }
@@ -104,14 +102,14 @@ async function request_storage_html() {
   await request(
     {
       url: 'https://yeet.wdaan.me/php/index.php',
-      json: true
+      json: true,
     },
     (error, response, body) => {
       if (!error && response.statusCode === 200) {
         // console.log(body); // Print the json response
         html_body = body
       }
-    }
+    },
   )
 
   return parse_storage_html(html_body)
@@ -143,23 +141,19 @@ async function request_plex_xml() {
   // request the data
   await request(
     {
-      url:
-        'http://' +
-        server_ip +
-        ':32400/status/sessions?X-Plex-Token=' +
-        plex_token,
-      json: false
+      url: 'http://' + server_ip + ':32400/status/sessions?X-Plex-Token=' + plex_token,
+      json: false,
     },
     (error, response, body) => {
       if (!error && response.statusCode === 200) {
         // convert xml to json
         const result = convert_xml.xml2json(body, {
           compact: true,
-          spaces: 4
+          spaces: 4,
         })
         json = JSON.parse(result)
       }
-    }
+    },
   )
   return parse_plex_json(json)
 }
@@ -243,7 +237,7 @@ function get_maker(info): Media {
         info._attributes.parentTitle.substring(0, 1) +
         info._attributes.parentTitle.substring(
           info._attributes.parentTitle.length - 2,
-          info._attributes.parentTitle.length
+          info._attributes.parentTitle.length,
         ) +
         'E' +
         info._attributes.index +
@@ -257,4 +251,11 @@ function get_maker(info): Media {
       break
   }
   return new Media(type, maker, title)
+}
+
+function system_sleep(s: number) {
+  let ms = s * 1000
+  return new Promise(resolve => {
+    setTimeout(resolve, ms)
+  })
 }

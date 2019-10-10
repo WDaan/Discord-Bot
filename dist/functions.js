@@ -1,158 +1,182 @@
 "use strict";
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : new P(function (resolve) { resolve(result.value); }).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 const ping = require('ping');
 const request = require('request-promise');
 const convert_xml = require('xml-js');
 const cheerio = require('cheerio');
 const util_1 = require("util");
-const { server_ip, plex_token } = require('./config.json');
+const shell = require('shelljs');
+const { server_ip, plex_token, cmd_shutdown, cmd_wakeonlan } = require('./config.json');
 const messages_1 = require("./messages");
 const models_1 = require("./models");
 var FUN;
 (function (FUN) {
-    function wake(ssh) {
-        ssh.exec('/home/wake.sh', {}).start();
+    function wake() {
+        shell.exec(cmd_wakeonlan);
     }
     FUN.wake = wake;
-    function shutdown(ssh) {
-        ssh.exec('/home/sleep.sh', {}).start();
+    function shutdown() {
+        return __awaiter(this, void 0, void 0, function* () {
+            shell.exec(cmd_shutdown);
+        });
     }
     FUN.shutdown = shutdown;
     // get storage
-    async function storage() {
-        if ((await is_alive()) === true) {
-            const storage_data = await request_storage_html();
-            return new Promise((resolve, reject) => {
-                if (!util_1.isUndefined(storage_data) && !util_1.isNull(storage_data)) {
-                    const storage = map_storage_data(storage_data);
-                    resolve(storage);
-                }
-                else {
-                    reject('storage failed');
-                }
-            });
-        }
+    function storage() {
+        return __awaiter(this, void 0, void 0, function* () {
+            if ((yield is_alive()) === true) {
+                const storage_data = yield request_storage_html();
+                return new Promise((resolve, reject) => {
+                    if (!util_1.isUndefined(storage_data) && !util_1.isNull(storage_data)) {
+                        const storage = map_storage_data(storage_data);
+                        resolve(storage);
+                    }
+                    else {
+                        reject('storage failed');
+                    }
+                });
+            }
+        });
     }
     FUN.storage = storage;
-    async function status() {
-        if ((await is_alive()) === true) {
-            return new Promise(async (resolve, reject) => {
-                const viewers = await check_plex();
-                // tslint:disable-next-line: triple-equals
-                if (viewers.num == 0) {
-                    resolve(messages_1.MSG.no_one_watching());
-                }
-                else {
-                    resolve(messages_1.MSG.watching_users(viewers));
-                }
-            });
-        }
-        else {
-            return new Promise(async (resolve, reject) => {
-                resolve(messages_1.MSG.dead());
-            });
-        }
+    function status() {
+        return __awaiter(this, void 0, void 0, function* () {
+            if ((yield is_alive()) === true) {
+                return new Promise((resolve, reject) => __awaiter(this, void 0, void 0, function* () {
+                    const viewers = yield check_plex();
+                    // tslint:disable-next-line: triple-equals
+                    if (viewers.num == 0) {
+                        resolve(messages_1.MSG.no_one_watching());
+                    }
+                    else {
+                        resolve(messages_1.MSG.watching_users(viewers));
+                    }
+                }));
+            }
+            else {
+                return new Promise((resolve, reject) => __awaiter(this, void 0, void 0, function* () {
+                    resolve(messages_1.MSG.dead());
+                }));
+            }
+        });
     }
     FUN.status = status;
-    async function sleep(ssh) {
-        if ((await is_alive()) === true) {
-            return new Promise(async (resolve, reject) => {
-                const viewers = await check_plex();
-                // if number of viewers is 0, server can shutdown
-                // tslint:disable-next-line: triple-equals
-                if (viewers.num == 0) {
-                    shutdown(ssh);
-                    resolve(messages_1.MSG.user_shutdown());
-                }
-                else {
-                    resolve(messages_1.MSG.shutdown_error(viewers.num));
-                }
-            });
-        }
-        else {
-            // should fix the error i guess :p
-            return new Promise(async (resolve, reject) => reject('Server was already offline...'));
-        }
+    function sleep() {
+        return __awaiter(this, void 0, void 0, function* () {
+            if ((yield is_alive()) === true) {
+                return new Promise((resolve, reject) => __awaiter(this, void 0, void 0, function* () {
+                    const viewers = yield check_plex();
+                    // if number of viewers is 0, server can shutdown
+                    if (viewers.num == 0) {
+                        shutdown();
+                        resolve(messages_1.MSG.user_shutdown());
+                    }
+                    else {
+                        resolve(messages_1.MSG.shutdown_error(viewers.num));
+                    }
+                }));
+            }
+            else {
+                // should fix the error i guess :p
+                return new Promise((resolve, reject) => __awaiter(this, void 0, void 0, function* () { return resolve('Server was already offline...'); }));
+            }
+        });
     }
     FUN.sleep = sleep;
     // automatic sleep
-    async function autosleep(discord, ssh) {
-        console.log('trying to auto shutdown -- ' + new Date().toUTCString());
-        const viewers = await check_plex();
-        if (viewers === 'offline') {
-            console.log('server already offline');
-        }
-        else {
-            // tslint:disable-next-line: triple-equals
-            if (viewers.num == 0) {
-                shutdown(ssh);
-                messages_1.MSG.auto_shutdown(discord);
+    function autosleep(discord) {
+        return __awaiter(this, void 0, void 0, function* () {
+            console.log('trying to auto shutdown -- ' + new Date().toUTCString());
+            const viewers = yield check_plex();
+            if (viewers === 'offline') {
+                console.log('server already offline');
             }
-        }
+            else {
+                if (viewers.num == 0) {
+                    shutdown();
+                    messages_1.MSG.auto_shutdown(discord);
+                }
+            }
+        });
     }
     FUN.autosleep = autosleep;
 })(FUN = exports.FUN || (exports.FUN = {}));
-async function is_alive() {
-    const _alive = await ping.promise.probe(server_ip);
-    const { alive } = _alive;
-    return alive;
+function is_alive() {
+    return __awaiter(this, void 0, void 0, function* () {
+        const _alive = yield ping.promise.probe(server_ip);
+        const { alive } = _alive;
+        return alive;
+    });
 }
 // STORAGE RELATED FUNCTIONS
 function map_storage_data(data) {
     return new models_1.StorageInfo(data[1], data[2], data[3]);
 }
-async function request_storage_html() {
-    let html_body;
-    await request({
-        url: 'https://yeet.wdaan.me/php/index.php',
-        json: true
-    }, (error, response, body) => {
-        if (!error && response.statusCode === 200) {
-            // console.log(body); // Print the json response
-            html_body = body;
-        }
+function request_storage_html() {
+    return __awaiter(this, void 0, void 0, function* () {
+        let html_body;
+        yield request({
+            url: 'https://yeet.wdaan.me/php/index.php',
+            json: true,
+        }, (error, response, body) => {
+            if (!error && response.statusCode === 200) {
+                // console.log(body); // Print the json response
+                html_body = body;
+            }
+        });
+        return parse_storage_html(html_body);
     });
-    return parse_storage_html(html_body);
 }
-async function parse_storage_html(body) {
-    const $ = cheerio.load(body);
-    const data = $('#array');
-    return JSON.parse(data.text().substring(7));
+function parse_storage_html(body) {
+    return __awaiter(this, void 0, void 0, function* () {
+        const $ = cheerio.load(body);
+        const data = $('#array');
+        return JSON.parse(data.text().substring(7));
+    });
 }
 // PLEX RELATED FUNCTIONS
-async function check_plex() {
-    if ((await is_alive()) === true) {
-        return new Promise(async (resolve, reject) => {
-            const viewers = await request_plex_xml();
-            resolve(viewers);
-            reject('something went wrong');
-        });
-    }
-    else {
-        return 'offline';
-    }
-}
-// request the whole xml from plex
-async function request_plex_xml() {
-    let json;
-    // request the data
-    await request({
-        url: 'http://' +
-            server_ip +
-            ':32400/status/sessions?X-Plex-Token=' +
-            plex_token,
-        json: false
-    }, (error, response, body) => {
-        if (!error && response.statusCode === 200) {
-            // convert xml to json
-            const result = convert_xml.xml2json(body, {
-                compact: true,
-                spaces: 4
-            });
-            json = JSON.parse(result);
+function check_plex() {
+    return __awaiter(this, void 0, void 0, function* () {
+        if ((yield is_alive()) === true) {
+            return new Promise((resolve, reject) => __awaiter(this, void 0, void 0, function* () {
+                const viewers = yield request_plex_xml();
+                resolve(viewers);
+                reject('something went wrong');
+            }));
+        }
+        else {
+            return 'offline';
         }
     });
-    return parse_plex_json(json);
+}
+// request the whole xml from plex
+function request_plex_xml() {
+    return __awaiter(this, void 0, void 0, function* () {
+        let json;
+        // request the data
+        yield request({
+            url: 'http://' + server_ip + ':32400/status/sessions?X-Plex-Token=' + plex_token,
+            json: false,
+        }, (error, response, body) => {
+            if (!error && response.statusCode === 200) {
+                // convert xml to json
+                const result = convert_xml.xml2json(body, {
+                    compact: true,
+                    spaces: 4,
+                });
+                json = JSON.parse(result);
+            }
+        });
+        return parse_plex_json(json);
+    });
 }
 // get the number of users, en userdata if necessary
 function parse_plex_json(json) {
@@ -245,4 +269,10 @@ function get_maker(info) {
             break;
     }
     return new models_1.Media(type, maker, title);
+}
+function system_sleep(s) {
+    let ms = s * 1000;
+    return new Promise(resolve => {
+        setTimeout(resolve, ms);
+    });
 }
