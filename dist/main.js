@@ -83,8 +83,8 @@ discord.on('message', (message) => __awaiter(this, void 0, void 0, function* () 
 }));
 // auto_shutdown server between 22h30 & 02h00
 schedule.scheduleJob({
-    hour: 9,
-    minute: 24,
+    hour: 21,
+    minute: 30,
 }, () => {
     functions_1.FUN.autosleep(discord); // first check
     const startTime = new Date(Date.now());

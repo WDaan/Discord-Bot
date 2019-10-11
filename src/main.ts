@@ -74,8 +74,8 @@ discord.on('message', async message => {
 // auto_shutdown server between 22h30 & 02h00
 schedule.scheduleJob(
   {
-    hour: 9,
-    minute: 24,
+    hour: 21,
+    minute: 30,
   },
   () => {
     FUN.autosleep(discord) // first check
