@@ -1,0 +1,11 @@
+{
+    "apps": [
+        {
+            "name": "BOT",
+            "exec_mode": "cluster",
+            "instances": "1",
+            "script": "./src/main.ts",
+            "interpreter": "ts-node"
+        }
+    ]
+}
