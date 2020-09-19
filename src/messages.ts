@@ -1,5 +1,5 @@
 import { isNull, isUndefined } from 'util'
-import { Media, StorageInfo, User, Viewers } from './models'
+import { Media, User, Viewers } from './models'
 
 export namespace MSG {
   export function wait(): string {
@@ -140,32 +140,6 @@ export namespace MSG {
         title: 'Server was auto shutdown at ' + hours + ':' + min,
       },
     })
-  }
-
-  export function storage(storage: StorageInfo): object {
-    return {
-      embed: {
-        color: 3447003,
-        title: 'Storage Info:',
-        fields: [
-          {
-            name: 'Free:',
-            value: storage.free + ' Gb',
-            inline: true,
-          },
-          {
-            name: 'Daan:',
-            value: storage.daan + ' Gb',
-            inline: true,
-          },
-          {
-            name: 'Media:',
-            value: storage.media + ' Gb',
-            inline: true,
-          },
-        ],
-      },
-    }
   }
 
   export function watching_users(viewers: Viewers): object {

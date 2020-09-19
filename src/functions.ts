@@ -1,14 +1,12 @@
 const ping = require('ping')
 const request = require('request-promise')
 const convert_xml = require('xml-js')
-const cheerio = require('cheerio')
-import { isNull, isUndefined } from 'util'
 
 const shell = require('shelljs')
 
 const { server_ip, plex_token, cmd_shutdown, cmd_wakeonlan } = require('./config.json')
 import { MSG } from './messages'
-import { Media, StorageInfo, User, Viewers } from './models'
+import { Media, User, Viewers } from './models'
 
 export namespace FUN {
   export function wake() {
@@ -17,21 +15,6 @@ export namespace FUN {
 
   export async function shutdown() {
     shell.exec(cmd_shutdown)
-  }
-
-  // get storage
-  export async function storage() {
-    if ((await is_alive()) === true) {
-      const storage_data = await request_storage_html()
-      return new Promise<StorageInfo>((resolve, reject) => {
-        if (!isUndefined(storage_data) && !isNull(storage_data)) {
-          const storage: StorageInfo = map_storage_data(storage_data)
-          resolve(storage)
-        } else {
-          reject('storage failed')
-        }
-      })
-    }
   }
 
   export async function status() {
@@ -89,36 +72,6 @@ async function is_alive() {
   const _alive = await ping.promise.probe(server_ip)
   const { alive } = _alive
   return alive
-}
-
-// STORAGE RELATED FUNCTIONS
-
-function map_storage_data(data) {
-  return new StorageInfo(data[1], data[2], data[3])
-}
-
-async function request_storage_html() {
-  let html_body
-  await request(
-    {
-      url: 'https://yeet.wdaan.me/php/index.php',
-      json: true,
-    },
-    (error, response, body) => {
-      if (!error && response.statusCode === 200) {
-        // console.log(body); // Print the json response
-        html_body = body
-      }
-    },
-  )
-
-  return parse_storage_html(html_body)
-}
-
-async function parse_storage_html(body) {
-  const $ = cheerio.load(body)
-  const data = $('#array')
-  return JSON.parse(data.text().substring(7))
 }
 
 // PLEX RELATED FUNCTIONS

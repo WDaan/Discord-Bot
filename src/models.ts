@@ -1,8 +1,3 @@
-// storage
-export class StorageInfo {
-  constructor(public free: string, public daan: string, public media: string) {}
-}
-
 // media
 export class Media {
   constructor(public type: string, public maker: string, public title: string) {}

@@ -1,18 +1,19 @@
 {
-  "compilerOptions": {
-    "module": "commonjs",
-    "esModuleInterop": true,
-    "target": "es6",
-    "moduleResolution": "node",
-    "outDir": "dist",
-    "watch" : true
-  },
-  "files": [
-    "src/main.ts",
-    "src/models.ts",
-    "src/messages.ts",
-    "src/functions.ts"
-  ],
-  "include": ["src/**/*.ts"],
-  "exclude": ["node_modules"]
+    "compilerOptions": {
+        "module": "commonjs",
+        "esModuleInterop": true,
+        "resolveJsonModule": true,
+        "target": "es6",
+        "moduleResolution": "node",
+        "outDir": "dist",
+        "watch": true
+    },
+    "files": [
+        "src/main.ts",
+        "src/models.ts",
+        "src/messages.ts",
+        "src/functions.ts"
+    ],
+    "include": ["src/**/*.ts"],
+    "exclude": ["node_modules"]
 }
