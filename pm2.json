@@ -4,8 +4,7 @@
             "name": "BOT",
             "exec_mode": "cluster",
             "instances": "1",
-            "script": "./src/main.ts",
-            "interpreter": "ts-node"
+            "script": "./dist/main.js"
         }
     ]
 }
