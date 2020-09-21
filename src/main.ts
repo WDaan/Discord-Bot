@@ -1,21 +1,21 @@
 const schedule = require('node-schedule')
 const Discord = require('discord.js')
 
-const config = require('./config.json')
+const { discord_token, prefix } = require('./config.json')
 
 import { FUN } from './functions'
 import { MSG } from './messages'
 
 // logging in to discord
 const discord = new Discord.Client()
-discord.login(config.token)
+discord.login(discord_token)
 discord.once('ready', () => {
     console.log('Ready!')
 })
 
 discord.on('message', async message => {
     if (message.member.hasPermission(['KICK_MEMBERS', 'BAN_MEMBERS'])) {
-        if (message.content.startsWith(`${config.prefix}`)) {
+        if (message.content.startsWith(`${prefix}`)) {
             const words = message.content.split(' ')
             const fword = words[0].substring(1)
             switch (fword) {
@@ -56,7 +56,7 @@ discord.on('message', async message => {
             }
         }
     } else {
-        if (message.content.startsWith(`${config.prefix}`)) {
+        if (message.content.startsWith(`${prefix}`)) {
             message.channel.send(MSG.supreme)
         }
     }
