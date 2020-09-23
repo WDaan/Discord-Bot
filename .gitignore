@@ -1,3 +1,3 @@
-src/config.json
+.env
 node_modules
 dist

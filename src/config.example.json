@@ -1,9 +1,0 @@
-{
-    "prefix": "prefix you want to use to invoke the bot",
-    "token": "your discord token",
-    "server_ip": "server ip-adress",
-    "plex_token": "plex-token",
-    "cmd_shutdown": "ssh username@ip 'echo password | sudo -S shutdown now'",
-    "cmd_kill_dockers": "ssh username@ip 'echo password | sudo -S docker stop $(docker ps -a -q)'",
-    "cmd_wakeonlan": "echo password | sudo -S wakeonlan -i 10.0.0.255 mac_adress"
-}
