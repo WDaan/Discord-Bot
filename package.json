@@ -7,7 +7,7 @@
         "format": "pretty-quick",
         "dev": "nodemon",
         "start": "ts-node src/main.ts",
-        "compile": "tsc"
+        "build": "tsc"
     },
     "author": "Daan Wijns",
     "license": "ISC",
