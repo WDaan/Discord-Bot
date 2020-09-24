@@ -7,9 +7,9 @@ RUN npm run build
 
 FROM node:slim as production-stage
 #install deps
-RUN apt update \
-    && apt install -y wakeonlan sshpass \
-    && apt autoremove && apt autoclean -y \
+RUN apt-get update \
+    && apt-get install -y wakeonlan sshpass \
+    && apt-get autoremove -y && apt-get autoclean -y \
     && rm -rf /var/lib/apt/lists/*
 #install app
 RUN mkdir /app
