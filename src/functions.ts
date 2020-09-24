@@ -1,58 +1,60 @@
-import ping from 'ping'
-import convert_xml from 'xml-js'
-import { asyncExec as exec } from 'async-shelljs'
-import axios from 'axios'
+const ping = require('ping')
+const request = require('request-promise')
+const convert_xml = require('xml-js')
 
-require('dotenv').config()
+const shell = require('shelljs')
 
+const { server, plex_token } = require('./config.json')
 import { MSG } from './messages'
 import { Media, User, Viewers } from './models'
 
 export namespace FUN {
-    export async function wake() {
-        return await exec(
-            `echo ${process.env.SERVER_IP} | sudo -S wakeonlan -i ${process.env.WAKEONLAN_IP} ${process.env.SERVER_MAC}`
+    export function wake() {
+        shell.exec(
+            `echo ${server.ip} | sudo -S wakeonlan -i ${server.wakeonlan_ip} ${server.mac}`
         )
     }
 
     export async function shutdown() {
-        return await exec(
-            `sshpass -p '${process.env.SERVER_PASS}' ssh ${process.env.SERVER_USER}@${process.env.SERVER_IP} 'echo ${process.env.SERVER_PASS} | sudo -S shutdown now`
-        )
+        shell.exec('cmd_shutdown')
     }
 
     export async function status() {
-        if (await is_alive()) {
+        if ((await is_alive()) === true) {
             return new Promise(async (resolve, reject) => {
                 const viewers: Viewers[] | any = await check_plex()
-
-                if (viewers.num) {
-                    return resolve(MSG.watching_users(viewers))
+                // tslint:disable-next-line: triple-equals
+                if (viewers.num == 0) {
+                    resolve(MSG.no_one_watching())
+                } else {
+                    resolve(MSG.watching_users(viewers))
                 }
-                return resolve(MSG.no_one_watching())
+            })
+        } else {
+            return new Promise(async (resolve, reject) => {
+                resolve(MSG.dead())
             })
         }
-        return new Promise(async (resolve, reject) => {
-            resolve(MSG.dead())
-        })
     }
 
     export async function sleep() {
-        if (await is_alive()) {
+        if ((await is_alive()) === true) {
             return new Promise(async (resolve, reject) => {
                 const viewers: any = await check_plex()
                 // if number of viewers is 0, server can shutdown
-                if (viewers.num) {
-                    return resolve(MSG.shutdown_error(viewers.num))
+                if (viewers.num == 0) {
+                    shutdown()
+                    resolve(MSG.user_shutdown())
+                } else {
+                    resolve(MSG.shutdown_error(viewers.num))
                 }
-
-                await shutdown()
-                return resolve(MSG.user_shutdown())
             })
+        } else {
+            // should fix the error i guess :p
+            return new Promise(async (resolve, reject) =>
+                resolve('Server was already offline...')
+            )
         }
-
-        return Promise.resolve(`${process.env.SERVER_NAME} was already offline...`)
-
     }
 
     // automatic sleep
@@ -70,14 +72,16 @@ export namespace FUN {
     }
 }
 
-function is_alive() {
-    return ping.promise.probe(process.env.SERVER_IP).then(res => res.alive)
+async function is_alive() {
+    const _alive = await ping.promise.probe(server.ip)
+    const { alive } = _alive
+    return alive
 }
 
 // PLEX RELATED FUNCTIONS
 
 async function check_plex() {
-    if (await is_alive()) {
+    if ((await is_alive()) === true) {
         return new Promise(async (resolve, reject) => {
             const viewers = await request_plex_xml()
             resolve(viewers)
@@ -90,18 +94,29 @@ async function check_plex() {
 
 // request the whole xml from plex
 async function request_plex_xml() {
-    const url = `http://${process.env.SERVER_IP}:32400/status/sessions?X-Plex-Token=${process.env.PLEX_TOKEN}`
-
-    const { data } = await axios.get(url, {
-        headers: { 'Content-Type': 'text/xml' }
-    })
-
-    const result = convert_xml.xml2json(data, {
-        compact: true,
-        spaces: 4
-    })
-
-    return parse_plex_json(JSON.parse(result))
+    let json
+    // request the data
+    await request(
+        {
+            url:
+                'http://' +
+                server.ip +
+                ':32400/status/sessions?X-Plex-Token=' +
+                plex_token,
+            json: false
+        },
+        (error, response, body) => {
+            if (!error && response.statusCode === 200) {
+                // convert xml to json
+                const result = convert_xml.xml2json(body, {
+                    compact: true,
+                    spaces: 4
+                })
+                json = JSON.parse(result)
+            }
+        }
+    )
+    return parse_plex_json(json)
 }
 
 // get the number of users, en userdata if necessary
@@ -199,7 +214,7 @@ function get_maker(info): Media {
     return new Media(type, maker, title)
 }
 
-function sleep(s: number) {
+function system_sleep(s: number) {
     let ms = s * 1000
     return new Promise(resolve => {
         setTimeout(resolve, ms)
