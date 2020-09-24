@@ -12,7 +12,8 @@
         "src/main.ts",
         "src/models.ts",
         "src/messages.ts",
-        "src/functions.ts"
+        "src/functions.ts",
+        "src/config.json"
     ],
     "include": ["src/**/*.ts"],
     "exclude": ["node_modules"]
