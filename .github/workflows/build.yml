@@ -4,10 +4,10 @@ jobs:
     build-and-publish:
         runs-on: ubuntu-latest
         steps:
-            - uses: actions/checkout@v2 # Checking out the repo
-            - name: Build and Publish latest Docker image
-              uses: VaultVulp/gp-docker-action@1.1.7
+            - uses: actions/checkout@master
+            - name: Publish to Registry
+              uses: HurricanKai/Publish-Docker-Github-Action@master
               with:
-                  github-token: ${{ secrets.GITHUB_TOKEN }} # Provide GITHUB_TOKEN to login into the GitHub Packages
-                  image-name: DiscordBot # Provide only Docker image name, tag will be automatically set to latest
-                  dockerfile: Dockerfile
+                  name: wdaan/DiscordBot
+                  username: ${{ secrets.DOCKER_USERNAME }}
+                  password: ${{ secrets.DOCKER_PASSWORD }}
