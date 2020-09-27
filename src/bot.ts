@@ -15,7 +15,7 @@ import { FUN } from './functions'
 import { NotBot, HasPermission } from './permissions'
 
 
-@Discord(process.env.prefix)
+@Discord(process.env.PREFIX)
 abstract class Bot {
 
     @Once('ready')
