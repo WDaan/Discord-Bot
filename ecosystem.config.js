@@ -2,7 +2,8 @@ module.exports = {
     apps: [
         {
             name: 'BOT',
-            script: 'dist/main.js'
+            script: './node_modules/.bin/_ts-node',
+            args: 'src/main.ts'
         }
     ]
 }

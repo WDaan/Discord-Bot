@@ -21,13 +21,13 @@ discord.on('message', async message => {
             switch (fword) {
                 case 'wake':
                     channel.send(MSG.wake())
-                    FUN.wake()
+                    await FUN.wake()
                         ? channel.send(MSG.wakeSuccesfull())
                         : MSG.command_failed()
                     break
                 case 'forcesleep':
                     channel.send(MSG.force_shutdown())
-                    FUN.shutdown()
+                    await FUN.shutdown()
                         ? channel.send(MSG.shutdownSuccesfull())
                         : channel.send(MSG.command_failed())
 
