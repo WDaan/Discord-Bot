@@ -1,0 +1,9 @@
+{
+    "apps": [
+        {
+            "name": "BOT",
+            "script": "./node_modules/.bin/ts-node",
+            "args": "src/main.ts"
+        }
+    ]
+}
