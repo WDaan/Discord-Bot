@@ -10,7 +10,7 @@ import { Media, User, Viewers } from './models'
 export namespace FUN {
     export async function wake() {
         return await exec(
-            `echo ${process.env.SERVER_IP} | sudo -S wakeonlan -i ${process.env.WAKEONLAN_IP} ${process.env.SERVER_MAC}`
+            `wakeonlan -i ${process.env.WAKEONLAN_IP} ${process.env.SERVER_MAC}`
         )
     }
 
