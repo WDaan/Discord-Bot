@@ -12,6 +12,7 @@
     "author": "Daan Wijns",
     "license": "ISC",
     "dependencies": {
+        "@typeit/discord": "^4.0.8",
         "async-shelljs": "^0.1.4",
         "axios": "^0.20.0",
         "discord.js": "^11.6.4",

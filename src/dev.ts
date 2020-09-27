@@ -1,6 +1,6 @@
 import { FUN } from './functions'
 
-import { asyncExec as exec, cp } from 'async-shelljs'
+import { asyncExec as exec } from 'async-shelljs'
 
 const command = process.argv[2] || null
 

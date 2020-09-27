@@ -5,23 +5,6 @@ export namespace MSG {
         return 'One moment pls...'
     }
 
-    export function no_command(): string {
-        return 'Das geen command! Kunde gij nie typen ofzo eh?!'
-    }
-
-    export function supreme(): string {
-        return 'Das enkel voor Supreme Leaders, wa hoopt gij zelf??'
-    }
-
-    export function wake(): object {
-        return {
-            embed: {
-                color: 3447003,
-                title: `Waking up ${process.env.SERVER_NAME}...`
-            }
-        }
-    }
-
     export function wakeSuccesfull(): object {
         return {
             embed: { color: 0x00ff22, title: 'Wakeup sucessful ^_^' }
@@ -37,15 +20,6 @@ export namespace MSG {
     export function command_failed(): object {
         return {
             embed: { color: 0xe31b1b, title: 'Command failed :cry:' }
-        }
-    }
-
-    export function force_shutdown(): object {
-        return {
-            embed: {
-                color: 3447003,
-                title: `Turning off ${process.env.SERVER_NAME}...`
-            }
         }
     }
 
@@ -81,7 +55,7 @@ export namespace MSG {
                     { name: 'Prefix : ', value: '!', inline: true },
                     {
                         name: 'Popular commands',
-                        value: '!meme\n!wake\n!sleep\n!storage\n!info\n!status'
+                        value: '!wake\n!sleep\n!info\n!status'
                     }
                 ]
             }
@@ -181,6 +155,18 @@ export namespace MSG {
                 color: 0xff0000,
                 title: "I can't do that, " + num + ' still watching.'
             }
+        }
+    }
+
+    export function info(msg: string) {
+        return {
+            embed: { color: 3447003, title: msg }
+        }
+    }
+
+    export function success(msg: string) {
+        return {
+            embed: { color: 0x00ff22, title: msg }
         }
     }
 }
