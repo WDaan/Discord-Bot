@@ -14,6 +14,24 @@ export class User {
             name = name.substr(0, 6)
         }
     }
+
+    public toString() {
+        let string = `${this.name}: ${this.media.type} --- `
+
+        switch (this.media.type) {
+            case 'Movie':
+                string += `${this.media.title}`
+                break
+            case 'Music':
+            case 'Serie':
+                string += `${this.media.maker} - ${this.media.title}`
+                break
+            default:
+                break
+        }
+
+        return string
+    }
 }
 
 // viewers

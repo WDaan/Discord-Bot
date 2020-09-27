@@ -1,4 +1,3 @@
-import { isNull, isUndefined } from 'util'
 import { Media, User, Viewers } from './models'
 
 export namespace MSG {
@@ -166,18 +165,10 @@ export namespace MSG {
 
     export function watching_users(viewers: Viewers): object {
         let watching_users_string = ''
-        if (!isUndefined(viewers) && !isNull(viewers)) {
-            for (let i = 0; i < viewers.num; i++) {
-                watching_users_string +=
-                    viewers.users[i].name +
-                    ': ' +
-                    viewers.users[i].media.type +
-                    '  ----  ' +
-                    viewers.users[i].media.maker +
-                    '  -  ' +
-                    viewers.users[i].media.title +
-                    '\n'
-            }
+        if (viewers && viewers.num) {
+            viewers.users.forEach(u => {
+                watching_users_string += u.toString() + '\n'
+            })
         }
         return {
             embed: { color: 3447003, title: watching_users_string }
