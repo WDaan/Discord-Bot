@@ -23,6 +23,10 @@ export namespace FUN {
                 `sshpass -p '${process.env.SERVER_PASS}' ssh ${process.env.SERVER_USER}@${process.env.SERVER_IP} 'echo ${process.env.SERVER_PASS} | 
 sudo -S docker kill (docker ps -a -q)'`
             )
+
+            //wait a little for dockers to stop
+            await waitFor(15000)
+
             return exec(
                 `sshpass -p '${process.env.SERVER_PASS}' ssh ${process.env.SERVER_USER}@${process.env.SERVER_IP} 'echo ${process.env.SERVER_PASS} | 
 sudo -S shutdown now'`
@@ -86,4 +90,10 @@ sudo -S shutdown now'`
 
         return false
     }
+}
+
+function waitFor(ms) {
+    return new Promise(resolve => {
+        setTimeout(resolve, ms)
+    })
 }
