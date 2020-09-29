@@ -9,10 +9,12 @@ import { getPlexData } from './plex'
 
 export namespace FUN {
     export async function wake() {
-        if (!(await is_alive()))
-            return exec(
+        if (!(await is_alive())) {
+            await exec(
                 `wakeonlan -i ${process.env.WAKEONLAN_IP} ${process.env.SERVER_MAC}`
             )
+            return false
+        }
 
         return true //allready awake
     }
@@ -24,8 +26,8 @@ export namespace FUN {
 sudo -S docker kill (docker ps -a -q)'`
             )
 
-            //wait a little for dockers to stop
-            await waitFor(15000)
+            //wait 20s for dockers to stop
+            await waitFor(20000)
 
             return exec(
                 `sshpass -p '${process.env.SERVER_PASS}' ssh ${process.env.SERVER_USER}@${process.env.SERVER_IP} 'echo ${process.env.SERVER_PASS} | 
@@ -92,7 +94,7 @@ sudo -S shutdown now'`
     }
 }
 
-function waitFor(ms) {
+export function waitFor(ms) {
     return new Promise(resolve => {
         setTimeout(resolve, ms)
     })
