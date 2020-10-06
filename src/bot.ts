@@ -11,7 +11,7 @@ import { Message } from 'discord.js'
 
 
 import { MSG } from './messages'
-import { FUN } from './functions'
+import { FUN, waitFor } from './functions'
 import { NotBot, HasPermission } from './permissions'
 
 
@@ -46,10 +46,10 @@ abstract class Bot {
                 MSG.success(`${process.env.SERVER_NAME} is already online 😀`)
             )
 
-        return setTimeout(async () => {
-            const alive = await FUN.is_alive()
-            alive ? channel.send(MSG.wakeSuccesfull()) : MSG.command_failed()
-        }, 30000)
+        await waitFor(30000)
+
+        const alive = await FUN.is_alive()
+        return alive ? channel.send(MSG.wakeSuccesfull()) : MSG.command_failed()
     }
 
     @Command('forcesleep')
@@ -61,12 +61,12 @@ abstract class Bot {
                 MSG.success(`${process.env.SERVER_NAME} is already offline`)
             )
 
-        return setTimeout(async () => {
-            const alive = await FUN.is_alive()
-            alive
-                ? channel.send(MSG.shutdownSuccesfull())
-                : MSG.command_failed()
-        }, 30000)
+        await waitFor(30000)
+
+        const alive = await FUN.is_alive()
+        return alive
+            ? channel.send(MSG.shutdownSuccesfull())
+            : MSG.command_failed()
     }
 
     @Command('sleep')
@@ -78,10 +78,10 @@ abstract class Bot {
                 MSG.success(`${process.env.SERVER_NAME} is already offline`)
             )
 
-        return setTimeout(async () => {
-            const alive = await FUN.is_alive()
-            alive ? channel.send(MSG.user_shutdown()) : MSG.command_failed()
-        }, 30000)
+        await waitFor(60000)
+
+        const alive = await FUN.is_alive()
+        return alive ? channel.send(MSG.user_shutdown()) : MSG.command_failed()
     }
 
     @Command('status')

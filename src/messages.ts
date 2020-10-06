@@ -169,4 +169,10 @@ export namespace MSG {
             embed: { color: 0x00ff22, title: msg }
         }
     }
+
+    export function error(msg: string): object {
+        return {
+            embed: { color: 0xff0000, title: msg }
+        }
+    }
 }

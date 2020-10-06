@@ -1,13 +1,15 @@
 import axios from 'axios'
 import { Media, User, Viewers } from './models'
+import { MSG } from './messages'
 // PLEX RELATED FUNCTIONS
 
 // request the whole xml from plex
 export async function getPlexData() {
     const url = `http://${process.env.SERVER_IP}:32400/status/sessions?X-Plex-Token=${process.env.PLEX_TOKEN}`
-    const { data } = await axios.get(url)
-
-    return parse_plex_json(data.MediaContainer)
+    return axios
+        .get(url)
+        .then(res => parse_plex_json(res.data.MediaContainer))
+        .catch(e => MSG.error('Plex is not running'))
 }
 
 // get the number of users, en userdata if necessary
