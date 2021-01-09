@@ -1,12 +1,11 @@
 # Discord-Bot
 
-This bot connects to a raspberry pi & a linux server.
-The pi is used to wake & shut the server down.
+> Written in Typescript
 
-Bot can:
+Simple Discord Bot to wake/shutdown my Linux server & Monitor Plex Users
+
+Abilities:
 - wake server
 - shutdown
-- autoshutdown
-- get number of plex streams
-- get who is watching/listening to what
-- get available free disk space on server
+- autoshutdown (wip after port to Typescript)
+- See who's watching & what on Plex
